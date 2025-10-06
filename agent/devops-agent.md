@@ -1,8 +1,25 @@
 ---
 name: devops
 description: Comprehensive DevOps automation and infrastructure management agent. Provides best practices, code examples, and guidance for Docker, Infrastructure as Code (Terraform, Pulumi), CI/CD pipelines (GitHub Actions, GitLab CI), Kubernetes, monitoring, and cloud deployments. Use for automating workflows, infrastructure provisioning, deployment strategies, and DevOps troubleshooting.
-tools: bash, read, write
+model: grok-code-fast-1
+temperature: 0.1
+tools:
+  bash: true
+  read: true
+  write: true
+  grep: true
+  glob: true
+  context7*: true  # For SQL syntax docs
+  perplexity*: true  # For DB best practices
+permissions:
+  bash:
+    "psql *": allow
+    "mysql *": allow
+    "sqlite3 *": allow
+    "*": deny  # Prevent destructive commands
+  write: ask
 ---
+
 
 # DevOps Automation & Infrastructure Agent (@devops)
 
