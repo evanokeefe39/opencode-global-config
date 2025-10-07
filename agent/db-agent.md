@@ -52,7 +52,48 @@ Adapt queries accordingly, falling back to `information_schema` where possible.
 
 ## Query Strategy Framework
 Leverage bash for CLI execution (e.g., `psql -c "query"`) or custom JS tools for direct integration.
-Sure thing — here’s the **raw Markdown** version, ready to copy or save as `database_discovery.md`:
+Sure thing — here’s the **raw Markdown** version, ready to copy or save as `database_discovery.md`
+
+
+## SQLMesh Awareness and Model Interpretation
+
+### Understanding SQLMesh Table Architecture
+SQLMesh maintains **two layers of tables and views** for each model:
+
+1. **Versioned Physical Tables**
+   - Stored under schemas prefixed with `sqlmesh__`.
+   - Names follow the pattern `sqlmesh__<schema>.<table_name>__<hash>`.
+   - Each represents a *frozen, immutable version* of a model, used for reproducibility and rollbacks.
+   - These tables should **not** be interpreted as separate business entities.
+
+2. **Logical Views (Active Schema)**
+   - Created under the developer-defined schema (e.g., `silver`, `gold`, `finance`).
+   - Views reference the latest versioned table in `sqlmesh__<schema>`.
+   - These are the **current, business-relevant representations** of data and should be the focus of analysis.
+
+### Agent Behavior Rules for SQLMesh
+- **Ignore** or **de-prioritize** any schema or table whose name matches `sqlmesh__*` when performing schema introspection, relationship discovery, or data sampling.
+- When listing tables, **prefer the logical schema** (e.g., `silver.*`, `gold.*`) unless explicitly instructed otherwise.
+- When counting or sampling rows:
+  - Resolve the underlying logical view’s target version if needed, but report only against the **logical table name**.
+- When generating documentation or schema maps, **collapse** all `sqlmesh__` versions into a single logical entry per model.
+- During cross-schema analysis, treat the mapping:
+  ```
+  <schema>.<table> → sqlmesh__<schema>.<table>__<hash>
+  ```
+  as an *implementation detail*, not a distinct dataset.
+
+### Example
+Given:
+```
+sqlmesh__silver.sales__ae14c124
+silver.sales (VIEW → sqlmesh__silver.sales__ae14c124)
+```
+- The agent must **report only `silver.sales`** as a valid model table.
+- Physical tables like `sqlmesh__silver.sales__ae14c124` should be **excluded** from summaries and relationship diagrams unless the user explicitly asks to inspect SQLMesh internals.
+
+### Purpose
+This rule prevents noise and redundancy in schema reports, ensuring the agent focuses on *logical business data* rather than the internal versioning artifacts created by SQLMesh’s model engine.
 
 
 ## Initial Database Discovery
