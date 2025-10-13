@@ -1,4 +1,4 @@
-# Additional nav entries to merge into mkdocs.yml automatically
+# Additional nav entries to merge into mkdocs.yml
 - Guides:
     - Getting Started: guides/getting-started.md
     - FAQ: guides/faq.md
