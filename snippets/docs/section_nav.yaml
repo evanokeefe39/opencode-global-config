@@ -1,0 +1,7 @@
+# Additional nav entries to merge into mkdocs.yml automatically
+- Guides:
+    - Getting Started: guides/getting-started.md
+    - FAQ: guides/faq.md
+- Reference:
+    - API: api/index.md
+    - Config: reference/config.md

@@ -59,10 +59,6 @@ For language-specific utilities, follow the relevant standards (e.g., Python or 
 - For TypeScript: Create `config.ts` and `tsconfig.json`.
 - Initialize package manager files (e.g., `pyproject.toml` for Python, `package.json` for TypeScript).
 
-## Documentation Policy
-- Use **MkDocs** as default for project-level documentation; goes under docs/ folder at root level.
-- For TypeScript projects, integrate TypeDoc for API docs if needed, but default to MkDocs.
-- Document language-specific elements accordingly (e.g., Python docstrings vs. JSDoc).
 
 ## Logging Policy
 - Let the user decide whether logs should be recorded to file/db for different modules.
