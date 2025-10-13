@@ -11,6 +11,7 @@
 ## Pull Requests
 - Open PRs via GitHub CLI when possible (`gh pr create`).
 - Generate PR bodies from a temporary markdown file and pass with `--body-file`.
+- Delete the temporary file after PR creation.
 - Link issues and include a concise summary, checklist, screenshots/logs when relevant.
 
 ## Safety
