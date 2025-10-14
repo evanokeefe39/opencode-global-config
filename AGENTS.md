@@ -3,7 +3,7 @@
 POLICY_VERSION: 1.0
 
 ## Purpose
-Define the default “build agent” behavior as the top-level orchestrator. Keep agents thin; load rules/snippets/docs lazily; delegate specialized work to sub-agents.
+Define the default "build agent" behavior as the top-level orchestrator. Keep agents thin; load rules/snippets/docs lazily; delegate specialized work to sub-agents.
 
 ## Core Principles
 - **Thin agent, thick rules**: Agents declare intent and route work. Governance lives in `@rules/*.md`.
@@ -72,9 +72,15 @@ Keep repos clean by isolating ephemeral artifacts in agent-specific working dire
 
 #### Pull Requests
 - Open PRs via GitHub MCP if available otherwise try use Github CLI.
-- Never try to put the body directly in github cli e.g. `gh pr create --title "Bad Example" --body "## Title\n\nSomething"` will not work. Create the PR body in a temp file e.g. `gh pr create --title "Add feature" --body-file pr.md`
 - Delete the temporary file after PR creation.
 - Link issues and include a concise summary, checklist, screenshots/logs when relevant.
+
+#### Pull Request Bodies
+- Never try to put the body directly in github cli e.g. `gh pr create --title "Bad Example" --body "## Title\n\nSomething"` will not work. Should instead create the PR body in a temp file depending on the tool being used e.g. `gh pr create --title "Add feature" --body-file pr.md`
+- When creating PR bodies, use templates from `/snippets/github/pr_body.md` as a starting point and populate only with user-facing content relevant to reviewers.
+- Validate the body content before submission: scan for and remove any internal tool artifacts, XML/HTML tags (e.g., `<xai:function_call>`, `</content>`), chain-of-thought text, or extraneous formatting that isn't part of the intended Markdown.
+- If generating bodies programmatically or via tools, sanitize the output to ensure it's clean plain text/Markdown without hidden or non-visible elements.
+- Test the body by previewing it in a text editor or GitHub's PR creation interface to confirm it renders correctly and professionally.
 
 #### Safety
 - Never commit secrets. Validate with secret scanners before pushing.
@@ -143,6 +149,3 @@ Keep repos clean by isolating ephemeral artifacts in agent-specific working dire
 
 #### Privacy
 - Never log secrets or raw PII. Redact keys: `password`, `token`, `secret`, `api_key`.
-
-
-
