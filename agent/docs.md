@@ -2,10 +2,6 @@
 name: docs
 mode: primary
 description: Orchestrates documentation for the project. Routes MkDocs site management, Markdown style enforcement, and API reference generation to focused sub-agents.
-delegates:
-  - docs-mkdocs
-  - docs-style
-  - docs-api
 ---
 
 # Docs Agent (@docs)
