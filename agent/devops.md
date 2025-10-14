@@ -2,13 +2,6 @@
 name: devops
 mode: primary
 description: Top-level DevOps orchestrator for version control, CI/CD, packaging, IaC, and runtime deployments. Detects context and delegates to specialized sub-agents.
-delegates:
-  - devops-vcs
-  - devops-build
-  - devops-cicd
-  - devops-iac
-  - devops-k8s
-  - devops-observability
 ---
 
 # DevOps Agent (@devops)

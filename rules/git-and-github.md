@@ -9,8 +9,8 @@
 - Commit early and often; keep messages imperative and scoped.
 
 ## Pull Requests
-- Open PRs via GitHub CLI when possible (`gh pr create`).
-- Generate PR bodies from a temporary markdown file and pass with `--body-file`.
+- Open PRs via GitHub MCP if available otherwise try use Github CLI.
+- Never try to put the body directly in github cli e.g. `gh pr create --title "Bad Example" --body "## Title\n\nSomething"` will not work. Create the PR body in a temp file e.g. `gh pr create --title "Add feature" --body-file pr.md`
 - Delete the temporary file after PR creation.
 - Link issues and include a concise summary, checklist, screenshots/logs when relevant.
 
