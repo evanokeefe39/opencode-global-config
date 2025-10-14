@@ -284,11 +284,31 @@ SELECT * FROM {table_name} TABLESAMPLE BERNOULLI(5) LIMIT 100;
 
 ##### triggers.sql
 ```sql
--- Trigger definitions in public schema
-SELECT trigger_name, event_object_table, action_timing, event_manipulation
-FROM information_schema.triggers
-WHERE trigger_schema = 'public';
+-- Triggers
+SELECT * FROM sqlite_master WHERE type = 'trigger';
 ```
+
+## Domain Documentation
+
+### DuckDB vs PostgreSQL
+| Feature | DuckDB | PostgreSQL |
+|--------|--------|------------|
+| Storage | File-based | Server process |
+| Strength | Local OLAP, Parquet | OLTP + mature ecosystem |
+| Parallelism | Vectorized | Process-based concurrency |
+| Best Use | Embedded analytics | Web/API backends |
+
+### Relational DB Best Practices
+- Model entities explicitly with primary keys and FKs.
+- Use appropriate data types (NUMERIC vs FLOAT for money).
+- Prefer prepared/parameterized statements to avoid injection.
+- Add created_at/updated_at timestamps to mutable entities.
+
+### S3 Storage Standards
+- Use folder-style prefixes to organize data (domain/year=YYYY/month=MM/day=DD).
+- Prefer Parquet for analytics workloads; store CSV only at ingestion edges.
+- Maintain a catalog (Glue/Hive) if external query engines will be used.
+- Keep access logs; enable object lock where compliance requires.
 
 #### SQLite
 

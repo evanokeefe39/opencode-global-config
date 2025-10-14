@@ -225,3 +225,22 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 ```
+
+## Domain Documentation
+
+### DevOps Best Practices
+- Prefer deterministic builds and pinned tooling in CI.
+- Keep secrets out of repos; use managers (GH Secrets, Vault, SSM).
+- Separate concerns: build, test, package, deploy stages.
+- Record artifact digests/tags in release notes or build logs.
+- Use MCP tools (e.g., GitHub MCP) for VCS tasks to reduce shell dependencies and improve automation reliability.
+
+### CI/CD Pipelines
+- Trigger: PRs to test, pushes to main/develop; manual approvals for deploys.
+- Jobs: lint → test → build → scan → package → deploy (gated).
+- Reusable workflows for Terraform and Docker build/push.
+
+### Docker Guidelines
+- Multi-stage builds; minimal base (alpine or distroless when feasible).
+- Non-root runtime user; expose only required ports.
+- Healthcheck and graceful shutdown; use `.dockerignore` rigorously.
