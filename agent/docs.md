@@ -15,21 +15,18 @@ Keep documentation accurate and consistent with a read-first, plan-first approac
 - Snippets: /snippets/docs/** (common templates, nav fragments, API reference stubs)
 - Docs (contextual): @docs/docs/*
 
-## Routing (auto-detect → delegate)
-| Signal | Delegate |
-|--------|----------|
-| mkdocs.yml, docs/ changed | @docs-mkdocs |
-| .md content style issues detected | @docs-style |
-| docs/api/** or mkdocstrings configured | @docs-api |
-
-If multiple match: user route > project AGENTS.md hint > strongest signal; always report chosen route and why.
-
 ## Commands
-- /docs — Detect → plan → build (dry-run first); print summary and artifacts.
-- /docs-update — Rebuild site and validate nav/links (requires @docs-mkdocs).
-- /docs-lint — Lint Markdown structure and headings (requires @docs-style).
-- /docs-api — Sync API reference via mkdocstrings (requires @docs-api).
-- /docs-report — Summarize rules loaded, delegates called, artifacts created.
+- /docs — Detect context → plan → build (dry-run first); print summary and artifacts.
+- /docs-update — Rebuild site and validate nav/links.
+- /docs-lint — Lint Markdown structure and headings.
+- /docs-api — Sync API reference via mkdocstrings.
+- /docs-report — Summarize rules loaded, actions taken, artifacts created.
+- /docs-mk build — Validate mkdocs.yml, merge nav fragments, run `mkdocs build --strict`.
+- /docs-mk serve — Optional local preview command suggestion (`mkdocs serve`).
+- /docs-api sync — Detect language, configure mkdocstrings, rebuild docs/api/ index pages.
+- /docs-api verify — Ensure public APIs have docstrings and export visibility (dry-run).
+- /docs-style lint — Check headings depth, sentence-case titles, fenced code blocks, and internal links.
+- /docs-style fix — Propose normalized front-matter and link corrections (dry-run by default).
 
 ## Safety
 - Always run mkdocs build --strict in dry-run first; only perform real build after confirmation.
@@ -41,3 +38,79 @@ If multiple match: user route > project AGENTS.md hint > strongest signal; alway
 - Store ephemeral reports under .docs-agent/ and keep git clean.
 - Keep headings at depth ≤ 3; prefer sentence case; use fenced code blocks.
 - Use MkDocs admonitions for notes/warnings.
+
+# API Docs Rules
+- Use mkdocstrings for Python (mkdocstrings[python]) and TypeScript (mkdocstrings[typescript]) when present.
+- Keep docs/api/ index up to date; regenerate when exports or modules change.
+- Verify docstrings on public functions/classes; propose stubs where missing.
+- Do not include private/internal members unless explicitly requested.
+
+# MkDocs Rules
+- Maintain mkdocs.yml with site metadata, theme, plugins, and nav.
+- Validate nav entries: every listed file must exist; no orphan pages unless explicitly ignored.
+- Run mkdocs build --strict first; capture output to .docs-agent/build.log.
+- Merge additional nav fragments from /snippets/docs/nav/*.yaml when instructed.
+
+# Markdown Style Rules
+- Top-level # title equals file name in sentence case; subsequent headings start at ##.
+- Max heading depth: ###.
+- Add front-matter when useful (title, description, tags); avoid noise.
+- Normalize relative links; prefer .md with anchors.
+- Keep paragraphs ≤ 4 lines; introduce concepts before code examples.
+
+## Snippets/Templates
+
+### API
+
+#### api_reference_template.md
+```markdown
+# API Reference
+
+List of modules and public exports.
+
+<!-- The docs agent will expand/replace this content using mkdocstrings. -->
+```
+
+#### python_module_index.md
+```markdown
+# Python API
+
+::: your_package
+    handler: python
+    options:
+      show_source: false
+```
+
+#### typescript_module_index.md
+```markdown
+# TypeScript API
+
+::: your_package
+    handler: typescript
+    options:
+      show_source: false
+```
+
+### Common
+
+#### front_matter.md
+```markdown
+---
+title: <Readable title>
+description: <Short 1–2 sentence summary>
+tags: [topic, language]
+---
+```
+
+### Nav
+
+#### section_nav.yaml
+```yaml
+# Additional nav entries to merge into mkdocs.yml
+- Guides:
+    - Getting Started: guides/getting-started.md
+    - FAQ: guides/faq.md
+- Reference:
+    - API: api/index.md
+    - Config: reference/config.md
+```
