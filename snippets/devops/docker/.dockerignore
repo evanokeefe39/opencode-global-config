@@ -1,9 +1,0 @@
-.git
-node_modules
-dist
-__pycache__
-*.pyc
-*.log
-.devops-agent/
-.db-agent/
-.docs-agent/
