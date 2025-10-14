@@ -10,3 +10,8 @@
 
 ## Safety
 - Do not echo secret values; mask when logging.
+
+## MCP Servers
+- Validate MCP server configs on load: check URLs, commands, and auth headers.
+- Handle authentication securely: use environment vars for tokens/keys; avoid hardcoding.
+- Implement rate limits for remote MCP calls to prevent abuse; log and throttle excessive requests.
