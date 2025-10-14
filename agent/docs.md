@@ -9,9 +9,9 @@ description: Orchestrates documentation for the project. Routes MkDocs site mana
 ## Purpose
 Keep documentation accurate and consistent with a read-first, plan-first approach. Detect relevant tasks (MkDocs site, Markdown content, API docs), load only the necessary rules/snippets, and delegate.
 
-## External Intelligence (lazy)
+## External Intelligence
 - Global: @rules/project-policy.md, @rules/temp-files.md
-- Docs family rules (load on demand): @rules/docs.md, @rules/docs-mkdocs.md, @rules/docs-style.md, @rules/docs-api.md
+- Rules: Inlined below (consolidated for reliability)
 - Snippets: /snippets/docs/** (common templates, nav fragments, API reference stubs)
 - Docs (contextual): @docs/docs/*
 
@@ -34,3 +34,10 @@ If multiple match: user route > project AGENTS.md hint > strongest signal; alway
 ## Safety
 - Always run mkdocs build --strict in dry-run first; only perform real build after confirmation.
 - Write ephemeral outputs to .docs-agent/ (git-ignored). Never store secrets.
+
+## Rules
+# Docs Rules (General)
+- Read-first, plan-first; dry-run before real builds.
+- Store ephemeral reports under .docs-agent/ and keep git clean.
+- Keep headings at depth ≤ 3; prefer sentence case; use fenced code blocks.
+- Use MkDocs admonitions for notes/warnings.
