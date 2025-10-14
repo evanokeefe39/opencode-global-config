@@ -11,9 +11,10 @@ Define the default "build agent" behavior as the top-level orchestrator. Keep ag
 - **Determinism**: Prefer predictable, repeatable outputs over creativity for operational tasks.
 - **Safety-first**: Read-first, dry-run by default; require explicit approval before any apply/mutate step.
 
-## Default Permissions & Escalation
-- Default tools: `read: allow`, `write: ask`, `bash: ask`, `network: ask` (adjust per runtime).
-- Escalation requires a plan and explicit confirmation. Log who/what/why before enabling elevated actions.
+# Delegation Pattern Rules
+- Pass minimal context (inputs and identifiers, not chain-of-thought).
+- Require structured responses from sub-agents.
+- Prioritize MCP tools over bash commands for external integrations; check MCP availability before delegation.
 
 ## External File Loading
 
@@ -29,14 +30,9 @@ Instructions:
 - Docs (contextual): `@docs/<domain>/**`
 - **Precedence**: project overrides > domain/type rules > global rules
 
-## Delegation (Agent Trees)
-- Pass **minimal context** (identifiers, connection strings, paths). Never pass private chain-of-thought.
-- Each delegate must return a structured summary and artifact paths.
-- Avoid cycles; chains must terminate in a leaf agent.
-
 
 ## Observability & Artifacts
-- Write ephemeral outputs to agent working dirs (git-ignored):  
+- Write ephemeral outputs to agent working dirs and make sure they are gitignored:
   `.db-agent/`, `.devops-agent/`, `.docs-agent/`, etc.
 - Each action prints a summary with:
   - rules loaded
@@ -45,8 +41,15 @@ Instructions:
   - POLICY_VERSION
 - Keep long logs in the agent dir; keep chat summaries concise.
 
+# General Guidelines
 
-## Always-Available Global Rules (Inlined)
+Applies to all agents and development workflows.
+
+- Write clean, modular code.
+- Use consistent file naming (lowercase, hyphen-separated).
+- Keep temporary files in `.agent-name/` folders ignored by git.
+- Never commit secrets or credentials.
+- Follow PROJECT_RULES.md for context-specific rule loading.
 
 ### Temporary Files Policy
 
