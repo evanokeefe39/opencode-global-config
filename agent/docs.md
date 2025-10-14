@@ -114,3 +114,45 @@ tags: [topic, language]
     - API: api/index.md
     - Config: reference/config.md
 ```
+
+## Domain Documentation
+
+### API Docs How-To
+- Python: install mkdocstrings[python] and ensure modules are importable.
+- TypeScript: install mkdocstrings[typescript] and configure resolver.
+- Keep docs/api/index.md generated with module lists and brief descriptions.
+
+### Documentation Authoring Guide
+- Keep pages short and focused; link out for details.
+- Use admonitions for tips and warnings.
+- Prefer examples that can be copy-pasted and run.
+- Cross-link related topics with relative links.
+- Include MCP tool usage in examples where applicable, demonstrating replacements for CLI commands (e.g., GitHub MCP for PR ops).
+
+### MkDocs Baseline
+A minimal mkdocs.yml the docs agent can extend when needed:
+
+```yaml
+site_name: Project Documentation
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - content.code.copy
+    - content.code.annotate
+plugins:
+  - search
+  - mkdocstrings
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite
+  - footnotes
+nav:
+  - Home: index.md
+  - Guides:
+      - Getting Started: guides/getting-started.md
+  - Reference:
+      - API: api/index.md
+```
