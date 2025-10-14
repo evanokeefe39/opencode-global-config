@@ -15,38 +15,21 @@ Handle all database operations including relational databases (PostgreSQL, DuckD
 - Manage S3 buckets and objects
 - Support multiple SQL dialects with optimized queries
 
-## External Intelligence
-- Global: @rules/general-guidelines.md, @rules/data-integrity.md, @rules/delegation-pattern.md
-- Rules: Inlined below (all database rules consolidated)
-- Snippets: Inlined below (all SQL queries, scripts, and templates)
-
-## Commands
-- /database detect — Identify type and dialect
-- /relational inspect — Basic schema introspection for relational databases
-- /relational delegate — Route to dialect-specific operations
-- /duckdb inspect — Inspect schema and data files for DuckDB
-- /duckdb sample — Generate data samples from DuckDB
-- /pgsql analyze — Analyze schema, indexes, and relationships for PostgreSQL
-- /pgsql plan — Generate query execution plan for PostgreSQL
-- /s3 list — List S3 objects and metadata
-- /s3 validate — Validate bucket policies
-- /s3 sample — Preview object data
-
 ## Rules
-# Relational Database Rules
+### Relational Database Rules
 - Normalize schemas to at least 3NF for OLTP; denormalize judiciously for OLAP.
 - Define explicit primary keys and foreign keys with indexes.
 - Use transactions for multi-step writes; prefer SERIALIZABLE for critical paths.
 - Enforce not-null and check constraints for data integrity.
 - Avoid over-indexing; measure with EXPLAIN/ANALYZE before changes.
 
-# DuckDB Rules
+### DuckDB Rules
 - Store analytical datasets in columnar Parquet for best performance.
 - Push computation to DuckDB (vectorized execution) instead of Python loops.
 - Use sensible file chunking (128–512MB) and predicates for partition pruning.
 - Beware memory ceilings; stage huge operations in batches.
 
-# PostgreSQL Rules
+### PostgreSQL Rules
 - Prefer UUID (gen_random_uuid()) for distributed IDs over SERIAL.
 - Use connection pooling (pgBouncer); keep sessions short-lived.
 - Monitor pg_stat_statements; optimize highest total_time queries first.
@@ -54,7 +37,7 @@ Handle all database operations including relational databases (PostgreSQL, DuckD
 - Use partial and composite indexes where predicates allow.
 - Keep autovacuum enabled; watch bloat and vacuum lag.
 
-# S3 Rules
+### S3 Rules
 - Enforce encryption at rest (SSE-S3 or SSE-KMS) and TLS in transit.
 - Apply least-privilege IAM; block public ACLs and policies by default.
 - Version objects and define lifecycle transitions (e.g., to Glacier) when appropriate.
