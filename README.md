@@ -24,11 +24,11 @@ OpenCode employs a modular agent-based architecture designed for extensibility a
 
 This repository tracks the global configuration for OpenCode, structured as follows:
 
-- `agents/`: Markdown files defining various sub-agents (e.g., database, DevOps, documentation agents) and their capabilities.
-- `rules/`: Policy and standards files governing behavior, naming conventions, security, and best practices.
-- `docs/`: Documentation guides and references for different domains and tools.
-- `snippets/`: Reusable code snippets and templates for common tasks.
+- `agents/`: Markdown files defining sub-agents (database, DevOps, documentation) and their capabilities.
+- `rules/`: Policy and standards files governing behavior, naming conventions, and best practices.
+- `snippets/`: Reusable code snippets, templates, and licenses for common tasks.
 - `AGENTS.md`: The global build agent contract outlining core principles and delegation patterns.
+- `opencode.json`: MCP server configuration.
 
 ## Methodology
 

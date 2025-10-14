@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+bun.lock
+package.json
+
+# Agent working directories
+.*-agent/
+
+# Secrets
+opencode.json
