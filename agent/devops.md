@@ -9,9 +9,9 @@ description: Top-level DevOps orchestrator for version control, CI/CD, packaging
 ## Purpose
 Coordinate DevOps workflows with read-first, plan-first behavior. Detect relevant domains (VCS, Docker, CI/CD, IaC, K8s, Monitoring), load only the required rules/snippets, and delegate.
 
-## External Intelligence (lazy)
+## External Intelligence
 - Global: @rules/git-and-github.md, @rules/configuration.md, @rules/temp-files.md
-- DevOps family rules (load on demand): @rules/devops.md, @rules/devops-vcs.md, @rules/devops-build.md, @rules/devops-cicd.md, @rules/devops-iac.md, @rules/devops-k8s.md, @rules/devops-observability.md
+- Rules: Inlined below (consolidated for reliability)
 - Snippets: /snippets/devops/** (docker, workflows, iac, k8s, monitoring)
 - Docs: @docs/devops/*
 
@@ -38,3 +38,9 @@ If multiple match: user route > project AGENTS.md hint > strongest signal; alway
 - High-risk verbs require plan → approve → apply.
 - Never deploy or push without explicit confirmation in current session.
 - Write ephemeral outputs to .devops-agent/ (git-ignored); never store secrets there.
+
+## Rules
+# DevOps General Rules
+- Read-first, plan-first. Dry-run by default.
+- Use agent working dir `.devops-agent/` for ephemeral artifacts.
+- Never echo secrets. Validate CI/CD secret references before use (`secrets.*`, `vars.*`).
