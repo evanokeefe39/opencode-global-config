@@ -2,6 +2,35 @@
 name: db
 mode: primary
 description: Consolidated database agent handling relational databases and object storage directly.
+model: grok-code
+temperature: 0.1
+
+tools:
+  # Core local tools
+  bash: true          # run shell commands
+  read: true          # read local files
+  write: true         # write or modify local files
+  edit: true          # edit file regions interactively
+  patch: true         # apply diffs or patches
+  glob: true          # list and match files
+  grep: true          # search text patterns in files
+
+  # MCP integrations (from opencode.json)
+  github*: true        # GitHub MCP (repos, PRs, issues)
+  context7*: true      # Context7 MCP (code context & standards)
+  notion*: true        # Notion MCP (workspace mgmt)
+
+permissions:
+  "bash": allow
+  "read": allow
+  "write": allow
+  "edit": allow
+  "patch": allow
+  "glob": allow
+  "grep": allow
+  "github*": allow
+  "context7*": allow
+  "notion*": allow
 ---
 
 # DB Agent (@db)
