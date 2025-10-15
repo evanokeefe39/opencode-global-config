@@ -1,5 +1,11 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "tools": {
+    "analyze_performance_logs": {
+      "enabled": true,
+      "description": "Analyze OpenCode performance logs"
+    }
+  },
   "mcp": {
     "context7": {
         "type": "remote",

@@ -78,6 +78,29 @@ Key principles:
 
 We welcome contributions! Please see our contributing guidelines (link TBD) and report issues at [GitHub Issues](https://github.com/sst/opencode/issues).
 
+## 📊 Performance Insights
+
+*Last updated: 2025-10-15 17:30 UTC*
+
+### Token Usage & Cost
+![Token Usage Trend](insights/charts/token-usage-trend.png)
+![Cost Over Time](insights/charts/cost-over-time.png)
+
+**Latest Daily Stats:**
+- Tokens Used: 45,231
+- Estimated Cost: $0.23
+
+### Response Performance
+![Response Latency Trend](insights/charts/response-latency-trend.png)
+
+**Latest Daily Average:**
+- Response Latency: 234 ms
+
+### Tool Usage
+![Tool Usage Breakdown](insights/charts/tool-usage-breakdown.png)
+
+*Insights automatically updated via GitHub Actions CI.*
+
 ## 📈 Quality Badges
 
 <!-- Add quality badges here, e.g., build status, coverage, etc. -->

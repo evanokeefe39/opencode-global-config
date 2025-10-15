@@ -2,12 +2,15 @@ import type { Plugin } from "@opencode-ai/plugin"
 import { mkdir } from "fs/promises"
 import { homedir } from "os"
 import path from "path"
+import { AnalyticsEngine } from "./analytics"
 
 // In-memory stores
 const writers = new Map<string, Bun.FileSink>()
 const totalTokens = new Map<string, number>()
 const toolStartTimes = new Map<string, number>()
 const toolInputs = new Map<string, any>()
+const sessionStartTimes = new Map<string, number>()
+const sessionAgents = new Map<string, {primary: string, subagent?: string}>()
 
 export const PerformanceTrackerPlugin: Plugin = async ({ client, $, directory }) => {
   // Helper to extract session ID from event
@@ -19,19 +22,131 @@ export const PerformanceTrackerPlugin: Plugin = async ({ client, $, directory })
     return "unknown"
   }
 
+  // Helper to get short session ID
+  function getShortSessionId(sessionId: string): string {
+    return sessionId.slice(-6)
+  }
+
   // Helper to get or create writer for session
   async function getWriter(sessionId: string) {
     if (writers.has(sessionId)) return writers.get(sessionId)!
     const logsDir = path.join(homedir(), '.config', 'opencode', 'logs')
     await mkdir(logsDir, { recursive: true })
-    const logPath = path.join(logsDir, `${sessionId}-performance.log`)
+    const startTime = sessionStartTimes.get(sessionId) || Date.now()
+    const shortId = getShortSessionId(sessionId)
+    const logPath = path.join(logsDir, `${startTime}-${shortId}.log`)
     const writer = Bun.file(logPath).writer()
     writers.set(sessionId, writer)
     totalTokens.set(sessionId, 0)
     return writer
   }
 
+  // New analytics tool
+  const analyticsTool = {
+    name: "analyze_performance_logs",
+    description: "Analyze performance logs and generate summaries/charts",
+    inputSchema: {
+      type: "object",
+      properties: {
+        analysis_type: {
+          type: "string",
+          enum: ["summary", "tokens_over_time", "response_times", "tool_performance", "agent_usage"],
+          description: "Type of analysis to perform"
+        },
+        time_range: {
+          type: "string",
+          enum: ["all", "last_24h", "last_7d", "last_30d"],
+          description: "Time range for analysis"
+        },
+        output_format: {
+          type: "string",
+          enum: ["json", "text", "chart"],
+          description: "Output format"
+        }
+      },
+      required: ["analysis_type"]
+    },
+    async execute({ analysis_type, time_range = "all", output_format = "json" }) {
+      const analytics = new AnalyticsEngine()
+      await analytics.loadLogs()
+
+      switch (analysis_type) {
+        case "summary":
+          return analytics.generateSummary(time_range, output_format)
+        case "tokens_over_time":
+          return analytics.analyzeTokensOverTime(time_range, output_format)
+        case "response_times":
+          return analytics.analyzeResponseTimes(time_range, output_format)
+        case "tool_performance":
+          return analytics.analyzeToolPerformance(time_range, output_format)
+        case "agent_usage":
+          return analytics.analyzeAgentUsage(time_range, output_format)
+        default:
+          throw new Error(`Unknown analysis type: ${analysis_type}`)
+      }
+    }
+  }
+
+  // Register the tool
+  $.registerTool(analyticsTool)
+
   return {
+    // NEW: Log agent invocations
+    "agent.invoked": async ({ agent, mode, sessionID }) => {
+      const writer = await getWriter(sessionID)
+
+      // Update session agent tracking
+      const current = sessionAgents.get(sessionID) || { primary: '', subagent: undefined }
+      if (mode === 'primary') {
+        current.primary = agent
+      } else if (mode === 'subagent') {
+        current.subagent = agent
+      }
+      sessionAgents.set(sessionID, current)
+
+      const logEntry = {
+        type: "agent_invocation",
+        session_id: sessionID,
+        agent_name: agent,
+        agent_mode: mode, // 'primary' or 'subagent'
+        timestamp: Date.now(),
+      }
+
+      writer.write(JSON.stringify(logEntry) + "\n")
+      await writer.flush()
+    },
+
+    // NEW: Log agent switches
+    "agent.switched": async ({ fromAgent, toAgent, sessionID }) => {
+      const writer = await getWriter(sessionID)
+
+      const logEntry = {
+        type: "agent_switch",
+        session_id: sessionID,
+        from_agent: fromAgent,
+        to_agent: toAgent,
+        timestamp: Date.now(),
+      }
+
+      writer.write(JSON.stringify(logEntry) + "\n")
+      await writer.flush()
+    },
+
+    // NEW: Track session start time
+    "session.started": async ({ sessionID }) => {
+      sessionStartTimes.set(sessionID, Date.now())
+
+      const writer = await getWriter(sessionID)
+      const logEntry = {
+        type: "session_start",
+        session_id: sessionID,
+        timestamp: Date.now(),
+      }
+
+      writer.write(JSON.stringify(logEntry) + "\n")
+      await writer.flush()
+    },
+
     // Log per message
     "chat.message": async (input, { message, parts }) => {
       const sessionId = message.sessionID
@@ -170,11 +285,14 @@ export const PerformanceTrackerPlugin: Plugin = async ({ client, $, directory })
 
         // Fetch config
         const config = await client.Config.get()
+        const agents = sessionAgents.get(sessionId) || { primary: '', subagent: undefined }
 
         const endLogEntry = {
           type: "session_end",
           session_id: sessionId,
           total_tokens: totalTokens.get(sessionId) || 0,
+          primary_agent: agents.primary,
+          subagent: agents.subagent,
           config,
           timestamp: Date.now(),
         }
@@ -185,6 +303,8 @@ export const PerformanceTrackerPlugin: Plugin = async ({ client, $, directory })
 
         writers.delete(sessionId)
         totalTokens.delete(sessionId)
+        sessionStartTimes.delete(sessionId)
+        sessionAgents.delete(sessionId)
       }
     },
   }

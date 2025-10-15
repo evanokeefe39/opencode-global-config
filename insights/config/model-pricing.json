@@ -1,0 +1,21 @@
+{
+  "models": {
+    "gpt-4": {
+      "input_per_1k": 0.002,
+      "output_per_1k": 0.006
+    },
+    "gpt-3.5-turbo": {
+      "input_per_1k": 0.0005,
+      "output_per_1k": 0.0015
+    },
+    "claude-3": {
+      "input_per_1k": 0.003,
+      "output_per_1k": 0.015
+    }
+  },
+  "default_model": "gpt-4",
+  "token_ratio_assumption": {
+    "input_percentage": 0.3,
+    "output_percentage": 0.7
+  }
+}

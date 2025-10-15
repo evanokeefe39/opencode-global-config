@@ -1,0 +1,7 @@
+{
+  "style": "seaborn-v0_8",
+  "colors": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"],
+  "figure_size": [12, 6],
+  "dpi": 150,
+  "date_format": "%Y-%m-%d"
+}
