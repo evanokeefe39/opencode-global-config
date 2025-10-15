@@ -16,7 +16,7 @@ CHARTS_DIR.mkdir(exist_ok=True)
 
 def create_token_usage_chart():
     """Create token usage over time chart"""
-    df = pd.read_csv(DATA_DIR / "token-usage-daily.csv")
+    df = pd.read_csv(DATA_DIR / "daily-aggregates.csv")
     df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values('date')
 
@@ -34,7 +34,7 @@ def create_token_usage_chart():
 
 def create_latency_chart():
     """Create response latency chart"""
-    df = pd.read_csv(DATA_DIR / "response-latency-daily.csv")
+    df = pd.read_csv(DATA_DIR / "daily-aggregates.csv")
     df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values('date')
 
@@ -52,19 +52,23 @@ def create_latency_chart():
 
 def create_tool_usage_chart():
     """Create tool usage breakdown chart"""
-    df = pd.read_csv(DATA_DIR / "tool-invocations-daily.csv")
+    df = pd.read_csv(DATA_DIR / "daily-aggregates.csv")
 
     # Get latest data
+    df['date'] = pd.to_datetime(df['date'])
     latest_date = df['date'].max()
     latest_data = df[df['date'] == latest_date]
 
-    if not latest_data.empty:
+    if not latest_data.empty and len(latest_data) > 0:
+        # Parse tool counts from the row (assuming total_tools column exists)
+        tools_count = latest_data['total_tools'].iloc[0]
+
+        # For now, create a simple chart with total tools
+        # In future, we could parse agent strings for more detailed breakdown
         fig, ax = plt.subplots(figsize=(10, 6))
-        latest_data.groupby('tool_name')['invocations'].sum().plot(kind='bar', ax=ax)
-        ax.set_title(f'Tool Usage Breakdown ({latest_date})', fontsize=14, fontweight='bold')
-        ax.set_xlabel('Tool Name')
+        ax.bar(['Total Tools'], [tools_count])
+        ax.set_title(f'Tool Usage ({latest_date.strftime("%Y-%m-%d")})', fontsize=14, fontweight='bold')
         ax.set_ylabel('Total Invocations')
-        plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
 
         plt.savefig(CHARTS_DIR / "tool-usage-breakdown.png", dpi=150, bbox_inches='tight')
@@ -72,21 +76,20 @@ def create_tool_usage_chart():
 
 def create_cost_chart():
     """Create cost over time chart"""
-    df = pd.read_csv(DATA_DIR / "cost-estimates-daily.csv", header=None,
-                    names=['date', 'cost', 'tokens'])
+    df = pd.read_csv(DATA_DIR / "daily-aggregates.csv")
     df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values('date')
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
 
     # Cost chart
-    ax1.plot(df['date'], df['cost'], marker='^', color='red', linewidth=2, markersize=4)
+    ax1.plot(df['date'], df['cost_estimate'], marker='^', color='red', linewidth=2, markersize=4)
     ax1.set_title('Estimated Daily Cost Over Time', fontsize=14, fontweight='bold')
     ax1.set_ylabel('Cost ($)')
     ax1.grid(True, alpha=0.3)
 
     # Token chart
-    ax2.plot(df['date'], df['tokens'], marker='o', color='blue', linewidth=2, markersize=4)
+    ax2.plot(df['date'], df['total_tokens'], marker='o', color='blue', linewidth=2, markersize=4)
     ax2.set_title('Token Usage Correlation', fontsize=14, fontweight='bold')
     ax2.set_xlabel('Date')
     ax2.set_ylabel('Tokens')

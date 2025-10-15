@@ -17,10 +17,10 @@ get_latest_stats() {
     fi
 }
 
-# Get latest metrics
-LATEST_TOKENS=$(get_latest_stats "${INSIGHTS_DIR}/data/token-usage-daily.csv" 2)
-LATEST_LATENCY=$(get_latest_stats "${INSIGHTS_DIR}/data/response-latency-daily.csv" 2)
-LATEST_COST=$(get_latest_stats "${INSIGHTS_DIR}/data/cost-estimates-daily.csv" 2)
+# Get latest metrics from daily aggregates
+LATEST_TOKENS=$(get_latest_stats "${INSIGHTS_DIR}/data/daily-aggregates.csv" 4)
+LATEST_LATENCY=$(get_latest_stats "${INSIGHTS_DIR}/data/daily-aggregates.csv" 5)
+LATEST_COST=$(get_latest_stats "${INSIGHTS_DIR}/data/daily-aggregates.csv" 7)
 
 # Update README with insights section
 if ! grep -q "## 📊 Performance Insights" "$README_FILE"; then

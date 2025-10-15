@@ -43,10 +43,10 @@ jobs:
         mkdir -p ~/.config/opencode/logs
         aws s3 sync s3://your-opencode-logs-bucket/performance-logs/ ~/.config/opencode/logs/ || true
 
-    - name: Run log analysis
+    - name: Run log aggregation
       run: |
-        chmod +x insights/scripts/analyze-logs.sh
-        ./insights/scripts/analyze-logs.sh
+        chmod +x insights/scripts/aggregate-logs.sh
+        ./insights/scripts/aggregate-logs.sh
 
     - name: Generate charts
       run: |

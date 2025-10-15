@@ -2,7 +2,6 @@ import type { Plugin } from "@opencode-ai/plugin"
 import { mkdir } from "fs/promises"
 import { homedir } from "os"
 import path from "path"
-import { AnalyticsEngine } from "./analytics"
 
 // In-memory stores
 const writers = new Map<string, Bun.FileSink>()
@@ -41,54 +40,7 @@ export const PerformanceTrackerPlugin: Plugin = async ({ client, $, directory })
     return writer
   }
 
-  // New analytics tool
-  const analyticsTool = {
-    name: "analyze_performance_logs",
-    description: "Analyze performance logs and generate summaries/charts",
-    inputSchema: {
-      type: "object",
-      properties: {
-        analysis_type: {
-          type: "string",
-          enum: ["summary", "tokens_over_time", "response_times", "tool_performance", "agent_usage"],
-          description: "Type of analysis to perform"
-        },
-        time_range: {
-          type: "string",
-          enum: ["all", "last_24h", "last_7d", "last_30d"],
-          description: "Time range for analysis"
-        },
-        output_format: {
-          type: "string",
-          enum: ["json", "text", "chart"],
-          description: "Output format"
-        }
-      },
-      required: ["analysis_type"]
-    },
-    async execute({ analysis_type, time_range = "all", output_format = "json" }) {
-      const analytics = new AnalyticsEngine()
-      await analytics.loadLogs()
 
-      switch (analysis_type) {
-        case "summary":
-          return analytics.generateSummary(time_range, output_format)
-        case "tokens_over_time":
-          return analytics.analyzeTokensOverTime(time_range, output_format)
-        case "response_times":
-          return analytics.analyzeResponseTimes(time_range, output_format)
-        case "tool_performance":
-          return analytics.analyzeToolPerformance(time_range, output_format)
-        case "agent_usage":
-          return analytics.analyzeAgentUsage(time_range, output_format)
-        default:
-          throw new Error(`Unknown analysis type: ${analysis_type}`)
-      }
-    }
-  }
-
-  // Register the tool
-  $.registerTool(analyticsTool)
 
   return {
     // NEW: Log agent invocations
