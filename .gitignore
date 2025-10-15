@@ -5,6 +5,7 @@ package.json
 
 # Agent working directories
 .*-agent/
+.opencode
 
 # Secrets
 opencode.json
