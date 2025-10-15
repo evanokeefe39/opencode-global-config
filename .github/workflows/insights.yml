@@ -1,0 +1,66 @@
+name: Generate Performance Insights
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        # Allow pushing back to repo
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        npm install
+        pip install matplotlib pandas seaborn
+
+    - name: Download performance logs
+      run: |
+        # Download logs from S3 or other storage
+        # This assumes logs are stored externally
+        mkdir -p ~/.config/opencode/logs
+        aws s3 sync s3://your-opencode-logs-bucket/performance-logs/ ~/.config/opencode/logs/ || true
+
+    - name: Run log aggregation
+      run: |
+        chmod +x insights/scripts/aggregate-logs.sh
+        ./insights/scripts/aggregate-logs.sh
+
+    - name: Generate charts
+      run: |
+        python insights/scripts/generate-charts.py
+
+    - name: Update README
+      run: |
+        chmod +x insights/scripts/update-readme.sh
+        ./insights/scripts/update-readme.sh
+
+    - name: Commit insights
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add insights/data/ insights/charts/ README.md
+        git diff --quiet && git diff --staged --quiet || git commit -m "chore: update performance insights [skip ci]"
+        git push
