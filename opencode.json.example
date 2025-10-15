@@ -9,14 +9,21 @@
         },
         "enabled": true
     },
-    "github": {
-        "type": "remote",
-        "url": "https://api.githubcopilot.com/mcp/",
-        "headers": {
-            "Authorization": "Bearer your_github_token_here"
+     "github": {
+         "type": "remote",
+         "url": "https://api.githubcopilot.com/mcp/",
+         "headers": {
+             "Authorization": "Bearer your_github_token_here"
+         },
+         "enabled": true
+     },
+     "notion": {
+        "type": "local",
+        "command": ["docker","run", "--rm", "-i", "-e", "NOTION_TOKEN", "mcp/notion"],
+        "environment": {
+            "NOTION_TOKEN": "your_ntn_token_here" #no Bearer prefix needed
         },
         "enabled": true
-
     }
   }
 }
