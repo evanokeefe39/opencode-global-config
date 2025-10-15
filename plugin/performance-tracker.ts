@@ -1,5 +1,7 @@
 import type { Plugin } from "@opencode-ai/plugin"
 import { mkdir } from "fs/promises"
+import { homedir } from "os"
+import path from "path"
 
 // In-memory stores
 const writers = new Map<string, Bun.FileSink>()
@@ -20,9 +22,9 @@ export const PerformanceTrackerPlugin: Plugin = async ({ client, $, directory })
   // Helper to get or create writer for session
   async function getWriter(sessionId: string) {
     if (writers.has(sessionId)) return writers.get(sessionId)!
-    const logsDir = `${directory}/.opencode/logs`
+    const logsDir = path.join(homedir(), '.config', 'opencode', 'logs')
     await mkdir(logsDir, { recursive: true })
-    const logPath = `${logsDir}/${sessionId}-performance.log`
+    const logPath = path.join(logsDir, `${sessionId}-performance.log`)
     const writer = Bun.file(logPath).writer()
     writers.set(sessionId, writer)
     totalTokens.set(sessionId, 0)
