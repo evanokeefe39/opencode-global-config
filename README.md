@@ -20,8 +20,10 @@ OpenCode employs a modular agent-based architecture designed for extensibility a
 
 This repository contains the global configuration for OpenCode:
 
-- `agents/` - Markdown files defining sub-agents (database, DevOps, documentation, Notion) and their capabilities
+- `agent/` - Markdown files defining sub-agents (database, DevOps, documentation, Notion) and their capabilities
+- `plugin/` - Performance tracking plugins and extensions
 - `snippets/` - Reusable code snippets, templates, and licenses for common tasks
+- `test/` - Testing guidelines and frameworks
 - `AGENTS.md` - Global build agent contract with core principles and delegation patterns
 - `opencode.json.example` - Example MCP server configuration (real config is gitignored for security)
 
@@ -58,12 +60,13 @@ This approach ensures efficiency and adaptability. For full details, see the [Op
 
 The "thin agent, thick rules" approach separates concerns:
 
-| Concern                                           | Agent Responsibility | Rules Responsibility |
-| ------------------------------------------------- | -------------------- | -------------------- |
-| Tool orchestration & intent declaration           | ✅                    | ❌                    |
-| Standards, naming, security policies              | ❌                    | ✅                    |
-| Context detection (language/framework)            | ✅                    | ❌                    |
-| Best practices for specific contexts              | ❌                    | ✅                    |
+| Concern                                           | Agent | Rules | Snippets |
+| ------------------------------------------------- | ----- | ----- | -------- |
+| Tool orchestration & intent declaration           | ✅     | ❌     | ❌        |
+| Standards, naming, security policies              | ❌     | ✅     | ❌        |
+| Context detection (language/framework)            | ✅     | ❌     | ❌        |
+| Best practices for specific contexts              | ❌     | ✅     | ❌        |
+| Providing concrete examples and reusable code     | ❌     | ❌     | ✅        |
 
 Key principles:
 - **Lazy Loading**: Resources loaded only when needed
