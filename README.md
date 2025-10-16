@@ -21,7 +21,7 @@ OpenCode employs a modular agent-based architecture designed for extensibility a
 This repository contains the global configuration for OpenCode:
 
 - `agent/` - Markdown files defining sub-agents (database, DevOps, documentation, Notion) and their capabilities
-- `plugin/` - Extensions and plugins (performance tracking currently deprecated - see `deprecated-performance-tracker` branch)
+- `plugin/` - Extensions and plugins (performance tracking currently mothballed - see `deprecated-performance-tracker` branch)
 - `snippets/` - Reusable code snippets, templates, and licenses for common tasks
 - `test/` - Testing guidelines and frameworks
 - `AGENTS.md` - Global build agent contract with core principles and delegation patterns
@@ -78,7 +78,7 @@ Key principles:
 
 - **Active Development**: Core agent architecture and MCP integrations
 - **Backlog Items**:
-  - Performance logging and analytics (temporarily deprecated in `deprecated-performance-tracker` branch)
+  - Performance logging and analytics (temporarily mothballed in `deprecated-performance-tracker` branch)
   - Enhanced documentation workflows
   - Additional MCP server integrations
 - **Branch Strategy**: Feature branches for active development, deprecated branches for paused features
