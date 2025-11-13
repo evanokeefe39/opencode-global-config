@@ -101,6 +101,13 @@ Keep repos clean by isolating ephemeral artifacts in agent-specific working dire
 
 ### Coding Standards & Design Patterns (Global)
 
+### Testing Frontend User Interface (UI)
+- Use the playwright mcp tool if available to test changes in the frontend of locally hosted apps
+- if docker container then always rebuild and restart the container when making changes
+
+#### Language Specific Coding Patters
+- python coding patterns and practices are in @rules/python.md
+
 #### Environment
 - Read secrets from `.env` or secret managers; do not hardcode.
 - Namespace env vars to avoid collisions (e.g., `SERVICE__KEY`).
